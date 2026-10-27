@@ -161,8 +161,8 @@
     .post:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(24,49,46,.08); }
     .post.featured { grid-column: 1 / -1; background: #eef1e5; }
     .post-content { display: flex; flex: 1; flex-direction: column; padding: 20px 26px 0; }
-    .post-art { display: block; width: 100%; height: 176px; background: #e8ebdf; }
-    .post.featured .post-art { height: 220px; }
+    .post-art { display: block; width: 100%; height: auto; background: #e8ebdf; }
+    .post.featured .post-art { height: auto; }
     .post-art svg { display: block; width: 100%; height: 100%; }
     .post-art .grain { opacity: .15; mix-blend-mode: multiply; }
     .image-editor {
@@ -172,88 +172,15 @@
     .image-editor > img.original-image {
       display: block;
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      height: auto;
+      object-fit: contain;
     }
-    .image-editor > img.edited-image {
+    .hero-visual > img.original-image {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
     }
-    .hero-visual > img.edited-image {
-      object-fit: cover;
-    }
-    .image-editor.has-uploaded-image:not([data-image-editor="cover"]) {
-      height: auto;
-      aspect-ratio: var(--uploaded-image-ratio);
-    }
-    .image-editor.has-uploaded-image:not([data-image-editor="cover"]) > img.edited-image {
-      object-fit: cover;
-    }
-    .image-editor.has-uploaded-video:not([data-image-editor="cover"]) {
-      height: auto;
-      aspect-ratio: 16 / 9;
-      background: #18312e;
-    }
-    .image-editor.has-uploaded-video > svg,
-    .image-editor.has-uploaded-video > img.original-image,
-    .image-editor.has-uploaded-video > img.edited-image { visibility: hidden; }
-    .image-editor > video.uploaded-video {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      background: #18312e;
-      object-fit: cover;
-    }
-    .image-editor.has-uploaded-video .image-tools { top: 10px; bottom: auto; }
-    .image-tools {
-      position: absolute;
-      z-index: 2;
-      right: 10px;
-      bottom: 10px;
-      display: flex;
-      gap: 7px;
-      opacity: .88;
-      transition: opacity .2s ease;
-    }
-    .image-editor:hover .image-tools,
-    .image-editor:focus-within .image-tools { opacity: 1; }
-    .image-tools button {
-      padding: 7px 10px;
-      border: 1px solid rgba(255,255,255,.55);
-      border-radius: 4px;
-      background: rgba(24,49,46,.9);
-      color: white;
-      font: 600 .76rem var(--sans);
-      cursor: pointer;
-    }
-    .image-tools button:hover { background: #18312e; }
-    .image-tools button:disabled { cursor: wait; opacity: .7; }
-    .image-tools input[type="file"] {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip: rect(0,0,0,0);
-      white-space: nowrap;
-      clip-path: inset(50%);
-    }
-    .image-status {
-      position: absolute;
-      z-index: 3;
-      top: 10px;
-      left: 10px;
-      max-width: calc(100% - 20px);
-      padding: 5px 9px;
-      border-radius: 4px;
-      background: rgba(24,49,46,.92);
-      color: white;
-      font-size: .75rem;
-    }
-    .image-status:empty { display: none; }
     .post-meta { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 13px; color: var(--muted); font-size: .75rem; letter-spacing: .05em; text-transform: uppercase; }
     .tag { color: var(--green); font-weight: 800; }
     .post h3 { margin-bottom: 5px; font-family: var(--serif); font-size: 1.8rem; font-weight: 400; line-height: 1.2; }
@@ -288,10 +215,15 @@
         right: auto;
         bottom: auto;
         width: calc(100% + 40px);
-        height: min(65vw, 330px);
-        min-height: 220px;
+        height: auto;
+        min-height: 0;
         margin: 28px -20px 0;
         border-radius: 70px 70px 0 0;
+      }
+      .hero-visual > img.original-image {
+        position: relative;
+        inset: auto;
+        height: auto;
       }
       .hero-visual::before {
         background: linear-gradient(180deg, var(--green), rgba(40,92,77,.2) 18%, transparent 55%);
@@ -348,12 +280,8 @@
         <path d="M58 207q8-13 17 0m254-37q8-13 17 0" fill="none" stroke="#fff6da" stroke-width="4" stroke-linecap="round"/>
         <circle cx="262" cy="59" r="4" fill="#fff6da"/><circle cx="284" cy="47" r="3" fill="#fff6da"/><circle cx="348" cy="136" r="4" fill="#fff6da"/>
       </svg>
-      <div class="image-tools">
-        <button type="button" data-image-action="change">Cambiar imagen</button>
-        <button type="button" data-image-action="reset" hidden>Restaurar</button>
-        <input type="file" accept="image/*" aria-label="Seleccionar imagen para la portada">
-      </div>
-      <span class="image-status" role="status" aria-live="polite"></span>
+      
+      
       </div>
     </section>
   </header>
@@ -371,7 +299,7 @@
       </div>
       <div class="posts">
         <article class="post">
-          <div class="post-art image-editor" data-image-editor="family"><svg viewBox="0 0 600 230" role="img" aria-labelledby="art-family" preserveAspectRatio="xMidYMid slice"><title id="art-family">Family gathered around a table for a warm meal</title><rect width="600" height="230" fill="#efc8a0"/><circle cx="493" cy="44" r="25" fill="#f6e4ae"/><path d="M0 183Q150 143 296 184t304-2v48H0Z" fill="#a9b887"/><path d="M105 195V99m0 32-35-36m35 50 37-36m250 86V91m0 43-33-37m33 48 38-35" stroke="#285c4d" stroke-width="9" stroke-linecap="round"/><circle cx="105" cy="83" r="27" fill="#d46e54"/><circle cx="355" cy="77" r="27" fill="#f3dfb5"/><circle cx="390" cy="76" r="27" fill="#77936c"/><path d="M126 174h270l-20 18H146Z" fill="#8a5a42"/><ellipse cx="260" cy="164" rx="65" ry="15" fill="#fff3d6"/><ellipse cx="260" cy="160" rx="48" ry="9" fill="#e49b56"/><circle cx="235" cy="158" r="5" fill="#78966b"/><circle cx="265" cy="154" r="5" fill="#d46e54"/><circle cx="283" cy="161" r="5" fill="#f1cc78"/><path d="M42 47q21-22 42 0m347 14q18-21 37 0" fill="none" stroke="#fff6da" stroke-width="4" stroke-linecap="round"/></svg><div class="image-tools"><button type="button" data-image-action="change">Cambiar imagen</button><button type="button" data-image-action="reset" hidden>Restaurar</button><input type="file" accept="image/*" aria-label="Seleccionar imagen para la entrada de familia"></div><span class="image-status" role="status" aria-live="polite"></span></div>
+          <div class="post-art image-editor" data-image-editor="family"><svg viewBox="0 0 600 230" role="img" aria-labelledby="art-family" preserveAspectRatio="xMidYMid slice"><title id="art-family">Family gathered around a table for a warm meal</title><rect width="600" height="230" fill="#efc8a0"/><circle cx="493" cy="44" r="25" fill="#f6e4ae"/><path d="M0 183Q150 143 296 184t304-2v48H0Z" fill="#a9b887"/><path d="M105 195V99m0 32-35-36m35 50 37-36m250 86V91m0 43-33-37m33 48 38-35" stroke="#285c4d" stroke-width="9" stroke-linecap="round"/><circle cx="105" cy="83" r="27" fill="#d46e54"/><circle cx="355" cy="77" r="27" fill="#f3dfb5"/><circle cx="390" cy="76" r="27" fill="#77936c"/><path d="M126 174h270l-20 18H146Z" fill="#8a5a42"/><ellipse cx="260" cy="164" rx="65" ry="15" fill="#fff3d6"/><ellipse cx="260" cy="160" rx="48" ry="9" fill="#e49b56"/><circle cx="235" cy="158" r="5" fill="#78966b"/><circle cx="265" cy="154" r="5" fill="#d46e54"/><circle cx="283" cy="161" r="5" fill="#f1cc78"/><path d="M42 47q21-22 42 0m347 14q18-21 37 0" fill="none" stroke="#fff6da" stroke-width="4" stroke-linecap="round"/></svg></div>
           <div class="post-content">
           <div class="post-meta"><span class="tag">Family</span><span>At home</span></div>
           <h3>The people who feel like home</h3>
@@ -382,7 +310,7 @@
         </article>
 
         <article class="post">
-          <div class="post-art image-editor" data-image-editor="hobbies"><svg viewBox="0 0 600 230" role="img" aria-labelledby="art-hobbies" preserveAspectRatio="xMidYMid slice"><title id="art-hobbies">Open book, music notes, and a night sky for creative hobbies</title><rect width="600" height="230" fill="#293e54"/><circle cx="472" cy="65" r="35" fill="#f4dc9d"/><circle cx="486" cy="53" r="34" fill="#293e54"/><circle cx="405" cy="40" r="3" fill="#fff3d6"/><circle cx="531" cy="109" r="4" fill="#fff3d6"/><circle cx="364" cy="93" r="3" fill="#fff3d6"/><path d="M95 176q77-42 160 0v40q-83-38-160 0Zm160 0q83-42 160 0v40q-77-38-160 0Z" fill="#f2dcae"/><path d="M255 176v40" stroke="#d46e54" stroke-width="5"/><path d="M129 185h91m-91 12h75m82-12h92m-92 12h76" stroke="#b18b66" stroke-width="3" stroke-linecap="round"/><path d="M118 71v56m0-51 32-8v47" fill="none" stroke="#d98b69" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="110" cy="128" rx="12" ry="8" transform="rotate(-20 110 128)" fill="#d98b69"/><ellipse cx="142" cy="116" rx="12" ry="8" transform="rotate(-20 142 116)" fill="#d98b69"/><path d="M208 72q20-24 40 0-20 24-40 0Zm0 0q20 24 40 0" fill="none" stroke="#a9c28a" stroke-width="5"/><circle cx="313" cy="82" r="14" fill="#d46e54"/><path d="M313 82v34m0-34q24-12 35 2" stroke="#d46e54" stroke-width="5" fill="none"/><path d="M83 148q13-13 26 0m154-66q14-14 28 0" fill="none" stroke="#f3dc9d" stroke-width="4" stroke-linecap="round"/></svg><div class="image-tools"><button type="button" data-image-action="change">Cambiar imagen</button><button type="button" data-image-action="reset" hidden>Restaurar</button><input type="file" accept="image/*" aria-label="Seleccionar imagen para la entrada de aficiones"></div><span class="image-status" role="status" aria-live="polite"></span></div>
+          <div class="post-art image-editor" data-image-editor="hobbies"><svg viewBox="0 0 600 230" role="img" aria-labelledby="art-hobbies" preserveAspectRatio="xMidYMid slice"><title id="art-hobbies">Open book, music notes, and a night sky for creative hobbies</title><rect width="600" height="230" fill="#293e54"/><circle cx="472" cy="65" r="35" fill="#f4dc9d"/><circle cx="486" cy="53" r="34" fill="#293e54"/><circle cx="405" cy="40" r="3" fill="#fff3d6"/><circle cx="531" cy="109" r="4" fill="#fff3d6"/><circle cx="364" cy="93" r="3" fill="#fff3d6"/><path d="M95 176q77-42 160 0v40q-83-38-160 0Zm160 0q83-42 160 0v40q-77-38-160 0Z" fill="#f2dcae"/><path d="M255 176v40" stroke="#d46e54" stroke-width="5"/><path d="M129 185h91m-91 12h75m82-12h92m-92 12h76" stroke="#b18b66" stroke-width="3" stroke-linecap="round"/><path d="M118 71v56m0-51 32-8v47" fill="none" stroke="#d98b69" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="110" cy="128" rx="12" ry="8" transform="rotate(-20 110 128)" fill="#d98b69"/><ellipse cx="142" cy="116" rx="12" ry="8" transform="rotate(-20 142 116)" fill="#d98b69"/><path d="M208 72q20-24 40 0-20 24-40 0Zm0 0q20 24 40 0" fill="none" stroke="#a9c28a" stroke-width="5"/><circle cx="313" cy="82" r="14" fill="#d46e54"/><path d="M313 82v34m0-34q24-12 35 2" stroke="#d46e54" stroke-width="5" fill="none"/><path d="M83 148q13-13 26 0m154-66q14-14 28 0" fill="none" stroke="#f3dc9d" stroke-width="4" stroke-linecap="round"/></svg></div>
           <div class="post-content">
           <div class="post-meta"><span class="tag">Hobbies</span><span>Slow moments</span></div>
           <h3>A little room for curiosity</h3>
@@ -393,7 +321,7 @@
         </article>
 
         <article class="post">
-          <div class="post-art image-editor" data-image-editor="work"><svg viewBox="0 0 600 230" role="img" aria-labelledby="art-work" preserveAspectRatio="xMidYMid slice"><title id="art-work">A tidy creative workspace with a laptop, plant, and cup</title><rect width="600" height="230" fill="#d5e0d2"/><circle cx="489" cy="54" r="28" fill="#f4d293"/><path d="M0 183h600v47H0Z" fill="#9c765a"/><rect x="169" y="69" width="225" height="116" rx="9" fill="#285c4d"/><rect x="182" y="82" width="199" height="88" rx="3" fill="#f5eee0"/><path d="m244 139 23-23 20 17 25-32 31 38Z" fill="#a9bd85"/><circle cx="331" cy="103" r="9" fill="#e8a16b"/><path d="M150 187h265l-22 12H172Z" fill="#e8e2d5"/><path d="M79 181V91m0 48q-30-18-31-44 28 2 31 44Zm0-22q29-19 30-43-28 2-30 43Z" fill="#77936c" stroke="#77936c" stroke-width="5" stroke-linejoin="round"/><path d="M60 181h39l-6 10H66Z" fill="#d46e54"/><rect x="455" y="149" width="45" height="35" rx="5" fill="#f1d5a2"/><path d="M500 156q22-1 17 15-3 9-17 8" fill="none" stroke="#f1d5a2" stroke-width="6"/><path d="M460 149q17-17 34 0" fill="#c87954"/><path d="M226 183v-17h33v17" fill="#d9a46d"/></svg><div class="image-tools"><button type="button" data-image-action="change">Cambiar imagen</button><button type="button" data-image-action="reset" hidden>Restaurar</button><input type="file" accept="image/*" aria-label="Seleccionar imagen para la entrada de trabajo"></div><span class="image-status" role="status" aria-live="polite"></span></div>
+          <div class="post-art image-editor" data-image-editor="work"><svg viewBox="0 0 600 230" role="img" aria-labelledby="art-work" preserveAspectRatio="xMidYMid slice"><title id="art-work">A tidy creative workspace with a laptop, plant, and cup</title><rect width="600" height="230" fill="#d5e0d2"/><circle cx="489" cy="54" r="28" fill="#f4d293"/><path d="M0 183h600v47H0Z" fill="#9c765a"/><rect x="169" y="69" width="225" height="116" rx="9" fill="#285c4d"/><rect x="182" y="82" width="199" height="88" rx="3" fill="#f5eee0"/><path d="m244 139 23-23 20 17 25-32 31 38Z" fill="#a9bd85"/><circle cx="331" cy="103" r="9" fill="#e8a16b"/><path d="M150 187h265l-22 12H172Z" fill="#e8e2d5"/><path d="M79 181V91m0 48q-30-18-31-44 28 2 31 44Zm0-22q29-19 30-43-28 2-30 43Z" fill="#77936c" stroke="#77936c" stroke-width="5" stroke-linejoin="round"/><path d="M60 181h39l-6 10H66Z" fill="#d46e54"/><rect x="455" y="149" width="45" height="35" rx="5" fill="#f1d5a2"/><path d="M500 156q22-1 17 15-3 9-17 8" fill="none" stroke="#f1d5a2" stroke-width="6"/><path d="M460 149q17-17 34 0" fill="#c87954"/><path d="M226 183v-17h33v17" fill="#d9a46d"/></svg></div>
           <div class="post-content">
           <div class="post-meta"><span class="tag">Work</span><span>Working together</span></div>
           <h3>More than a to-do list</h3>
@@ -404,7 +332,7 @@
         </article>
 
         <article class="post">
-          <div class="post-art image-editor" data-image-editor="travel"><svg viewBox="0 0 600 230" role="img" aria-labelledby="art-travel" preserveAspectRatio="xMidYMid slice"><title id="art-travel">Mountain valley, winding road, and little yellow sun</title><rect width="600" height="230" fill="#efc9a3"/><circle cx="472" cy="50" r="31" fill="#f4db9a"/><path d="m0 165 135-105 105 99 100-120 160 131v60H0Z" fill="#7b8e78"/><path d="m242 158 98-119 60 55-44-14-28 35-24-13-32 56Z" fill="#f5e9ce"/><path d="m0 184 151-81 115 80 141-63 193 72v38H0Z" fill="#a9b887"/><path d="M206 230q62-56 18-87-32-23 18-45 71-29 46-68 70 55 0 91-45 24 4 51 39 26-19 58Z" fill="#d49c60"/><rect x="74" y="135" width="35" height="46" rx="3" fill="#f3dfb5"/><path d="m65 139 26-22 28 22" fill="#d46e54"/><rect x="87" y="153" width="11" height="28" fill="#78966b"/><path d="M430 163v-31m0 16-17-15m17 21 18-18" stroke="#285c4d" stroke-width="5" stroke-linecap="round"/><circle cx="430" cy="128" r="10" fill="#77936c"/><path d="M520 64q20-20 40 0" stroke="#fff6da" stroke-width="4" fill="none" stroke-linecap="round"/></svg><div class="image-tools"><button type="button" data-image-action="change">Cambiar imagen</button><button type="button" data-image-action="reset" hidden>Restaurar imagen</button><button type="button" data-video-action="change">Subir video</button><button type="button" data-video-action="reset" hidden>Quitar video</button><input type="file" accept="image/*" aria-label="Seleccionar imagen para la entrada de viajes"><input type="file" data-video-input accept="video/*" aria-label="Seleccionar video de viajes"></div><span class="image-status" role="status" aria-live="polite"></span></div>
+          <div class="post-art image-editor" data-image-editor="travel"><svg viewBox="0 0 600 230" role="img" aria-labelledby="art-travel" preserveAspectRatio="xMidYMid slice"><title id="art-travel">Mountain valley, winding road, and little yellow sun</title><rect width="600" height="230" fill="#efc9a3"/><circle cx="472" cy="50" r="31" fill="#f4db9a"/><path d="m0 165 135-105 105 99 100-120 160 131v60H0Z" fill="#7b8e78"/><path d="m242 158 98-119 60 55-44-14-28 35-24-13-32 56Z" fill="#f5e9ce"/><path d="m0 184 151-81 115 80 141-63 193 72v38H0Z" fill="#a9b887"/><path d="M206 230q62-56 18-87-32-23 18-45 71-29 46-68 70 55 0 91-45 24 4 51 39 26-19 58Z" fill="#d49c60"/><rect x="74" y="135" width="35" height="46" rx="3" fill="#f3dfb5"/><path d="m65 139 26-22 28 22" fill="#d46e54"/><rect x="87" y="153" width="11" height="28" fill="#78966b"/><path d="M430 163v-31m0 16-17-15m17 21 18-18" stroke="#285c4d" stroke-width="5" stroke-linecap="round"/><circle cx="430" cy="128" r="10" fill="#77936c"/><path d="M520 64q20-20 40 0" stroke="#fff6da" stroke-width="4" fill="none" stroke-linecap="round"/></svg></div>
           <div class="post-content">
           <div class="post-meta"><span class="tag">Travel</span><span>On the road</span></div>
           <h3>The best souvenir is a story</h3>
@@ -415,7 +343,7 @@
         </article>
 
         <article class="post">
-          <div class="post-art image-editor" data-image-editor="news"><svg viewBox="0 0 600 230" role="img" aria-labelledby="art-news" preserveAspectRatio="xMidYMid slice"><title id="art-news">Newspaper with a magnifying glass and a breaking-news sun</title><rect width="600" height="230" fill="#ded9c9"/><circle cx="489" cy="48" r="30" fill="#d98666"/><rect x="117" y="34" width="263" height="168" rx="4" fill="#fffdf5" transform="rotate(-5 117 34)"/><path d="m137 63 202-18m-200 31 91-8" stroke="#285c4d" stroke-width="8" stroke-linecap="round"/><rect x="140" y="91" width="83" height="57" fill="#e9b580" transform="rotate(-5 140 91)"/><path d="m143 139 30-34 21 16 16-20 15 31Z" fill="#78966b"/><path d="m238 92 92-8m-90 19 71-7m-70 19 85-8m-86 19 59-6m-152 49 110-11" stroke="#aaa595" stroke-width="5" stroke-linecap="round"/><circle cx="404" cy="139" r="45" fill="none" stroke="#285c4d" stroke-width="11"/><path d="m436 171 44 39" stroke="#285c4d" stroke-width="15" stroke-linecap="round"/><circle cx="404" cy="139" r="29" fill="#f1d69a" opacity=".65"/><path d="M451 77q19-20 38 0m-256 118q18-17 36 0" fill="none" stroke="#fffdf5" stroke-width="4" stroke-linecap="round"/></svg><div class="image-tools"><button type="button" data-image-action="change">Cambiar imagen</button><button type="button" data-image-action="reset" hidden>Restaurar</button><input type="file" accept="image/*" aria-label="Seleccionar imagen para la entrada de actualidad"></div><span class="image-status" role="status" aria-live="polite"></span></div>
+          <div class="post-art image-editor" data-image-editor="news"><svg viewBox="0 0 600 230" role="img" aria-labelledby="art-news" preserveAspectRatio="xMidYMid slice"><title id="art-news">Newspaper with a magnifying glass and a breaking-news sun</title><rect width="600" height="230" fill="#ded9c9"/><circle cx="489" cy="48" r="30" fill="#d98666"/><rect x="117" y="34" width="263" height="168" rx="4" fill="#fffdf5" transform="rotate(-5 117 34)"/><path d="m137 63 202-18m-200 31 91-8" stroke="#285c4d" stroke-width="8" stroke-linecap="round"/><rect x="140" y="91" width="83" height="57" fill="#e9b580" transform="rotate(-5 140 91)"/><path d="m143 139 30-34 21 16 16-20 15 31Z" fill="#78966b"/><path d="m238 92 92-8m-90 19 71-7m-70 19 85-8m-86 19 59-6m-152 49 110-11" stroke="#aaa595" stroke-width="5" stroke-linecap="round"/><circle cx="404" cy="139" r="45" fill="none" stroke="#285c4d" stroke-width="11"/><path d="m436 171 44 39" stroke="#285c4d" stroke-width="15" stroke-linecap="round"/><circle cx="404" cy="139" r="29" fill="#f1d69a" opacity=".65"/><path d="M451 77q19-20 38 0m-256 118q18-17 36 0" fill="none" stroke="#fffdf5" stroke-width="4" stroke-linecap="round"/></svg></div>
           <div class="post-content">
           <div class="post-meta"><span class="tag">Current events</span><span>Staying informed</span></div>
           <h3>News with a human face</h3>
@@ -426,7 +354,7 @@
         </article>
 
         <article class="post featured">
-          <div class="post-art image-editor" data-image-editor="media"><svg viewBox="0 0 900 250" role="img" aria-labelledby="art-media" preserveAspectRatio="xMidYMid slice"><title id="art-media">A magnifying glass checking colorful media cards for reliable information</title><rect width="900" height="250" fill="#dce6d8"/><circle cx="748" cy="47" r="37" fill="#f0cb7d"/><path d="M0 204q197-48 371 5t529-8v49H0Z" fill="#b4c596"/><rect x="110" y="54" width="186" height="133" rx="7" fill="#fffdf5" transform="rotate(-8 110 54)"/><rect x="152" y="65" width="185" height="138" rx="7" fill="#f2d7aa" transform="rotate(6 152 65)"/><rect x="181" y="80" width="177" height="123" rx="7" fill="#fffdf5"/><path d="M204 104h126m-126 17h83m-83 17h109m-109 17h68" stroke="#9eaa91" stroke-width="7" stroke-linecap="round"/><circle cx="462" cy="127" r="69" fill="#b7d0c0" fill-opacity=".56" stroke="#285c4d" stroke-width="13"/><path d="m513 178 58 54" stroke="#285c4d" stroke-width="19" stroke-linecap="round"/><path d="m437 126 18 18 37-43" fill="none" stroke="#d46e54" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M649 149v-53m0 10 27-16m-27 37-25-19" stroke="#285c4d" stroke-width="7" stroke-linecap="round"/><circle cx="649" cy="81" r="16" fill="#d46e54"/><circle cx="679" cy="89" r="12" fill="#f1b76f"/><circle cx="622" cy="108" r="12" fill="#78966b"/><path d="M596 192q21-21 42 0m184-121q16-16 32 0" fill="none" stroke="#fffdf5" stroke-width="5" stroke-linecap="round"/></svg><div class="image-tools"><button type="button" data-image-action="change">Cambiar imagen</button><button type="button" data-image-action="reset" hidden>Restaurar</button><input type="file" accept="image/*" aria-label="Seleccionar imagen para la entrada de alfabetización mediática"></div><span class="image-status" role="status" aria-live="polite"></span></div>
+          <div class="post-art image-editor" data-image-editor="media"><svg viewBox="0 0 900 250" role="img" aria-labelledby="art-media" preserveAspectRatio="xMidYMid slice"><title id="art-media">A magnifying glass checking colorful media cards for reliable information</title><rect width="900" height="250" fill="#dce6d8"/><circle cx="748" cy="47" r="37" fill="#f0cb7d"/><path d="M0 204q197-48 371 5t529-8v49H0Z" fill="#b4c596"/><rect x="110" y="54" width="186" height="133" rx="7" fill="#fffdf5" transform="rotate(-8 110 54)"/><rect x="152" y="65" width="185" height="138" rx="7" fill="#f2d7aa" transform="rotate(6 152 65)"/><rect x="181" y="80" width="177" height="123" rx="7" fill="#fffdf5"/><path d="M204 104h126m-126 17h83m-83 17h109m-109 17h68" stroke="#9eaa91" stroke-width="7" stroke-linecap="round"/><circle cx="462" cy="127" r="69" fill="#b7d0c0" fill-opacity=".56" stroke="#285c4d" stroke-width="13"/><path d="m513 178 58 54" stroke="#285c4d" stroke-width="19" stroke-linecap="round"/><path d="m437 126 18 18 37-43" fill="none" stroke="#d46e54" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M649 149v-53m0 10 27-16m-27 37-25-19" stroke="#285c4d" stroke-width="7" stroke-linecap="round"/><circle cx="649" cy="81" r="16" fill="#d46e54"/><circle cx="679" cy="89" r="12" fill="#f1b76f"/><circle cx="622" cy="108" r="12" fill="#78966b"/><path d="M596 192q21-21 42 0m184-121q16-16 32 0" fill="none" stroke="#fffdf5" stroke-width="5" stroke-linecap="round"/></svg></div>
           <div class="post-content">
           <div class="post-meta"><span class="tag">Critical thinking &amp; media literacy</span><span>Pause before sharing</span></div>
           <h3>Think twice, click once</h3>
@@ -437,7 +365,7 @@
         </article>
 
         <article class="post featured">
-          <div class="post-art image-editor" data-image-editor="justice"><svg viewBox="0 0 900 250" role="img" aria-labelledby="art-justice" preserveAspectRatio="xMidYMid slice"><title id="art-justice">Balanced scales of justice with a growing plant and a hopeful sunrise</title><rect width="900" height="250" fill="#e9d5b9"/><circle cx="725" cy="67" r="45" fill="#e9a776"/><path d="M0 211q152-38 326 0t574-3v42H0Z" fill="#b4bd91"/><path d="M445 50v132m-85-95h170m-169 0-46 77h92Zm169 0-46 77h92Z" fill="none" stroke="#285c4d" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M415 185h60m-77 17h94" stroke="#285c4d" stroke-width="9" stroke-linecap="round"/><path d="M256 196v-82m0 46q-34-7-37-37 29 0 37 37m0-16q33-8 36-37-27 1-36 37" fill="#78966b" stroke="#78966b" stroke-width="6" stroke-linejoin="round"/><path d="M225 196h61l-9 17h-43Z" fill="#d46e54"/><path d="M656 153q20-20 40 0m64 19q17-17 34 0" fill="none" stroke="#fffdf5" stroke-width="5" stroke-linecap="round"/><path d="M686 111q12-13 24 0-12 13-24 0Zm0 0q12 13 24 0" fill="none" stroke="#285c4d" stroke-width="4"/><circle cx="172" cy="80" r="5" fill="#fffdf5"/><circle cx="786" cy="116" r="5" fill="#fffdf5"/></svg><div class="image-tools"><button type="button" data-image-action="change">Cambiar imagen</button><button type="button" data-image-action="reset" hidden>Restaurar</button><input type="file" accept="image/*" aria-label="Seleccionar imagen para la entrada de crimen y castigo"></div><span class="image-status" role="status" aria-live="polite"></span></div>
+          <div class="post-art image-editor" data-image-editor="justice"><svg viewBox="0 0 900 250" role="img" aria-labelledby="art-justice" preserveAspectRatio="xMidYMid slice"><title id="art-justice">Balanced scales of justice with a growing plant and a hopeful sunrise</title><rect width="900" height="250" fill="#e9d5b9"/><circle cx="725" cy="67" r="45" fill="#e9a776"/><path d="M0 211q152-38 326 0t574-3v42H0Z" fill="#b4bd91"/><path d="M445 50v132m-85-95h170m-169 0-46 77h92Zm169 0-46 77h92Z" fill="none" stroke="#285c4d" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M415 185h60m-77 17h94" stroke="#285c4d" stroke-width="9" stroke-linecap="round"/><path d="M256 196v-82m0 46q-34-7-37-37 29 0 37 37m0-16q33-8 36-37-27 1-36 37" fill="#78966b" stroke="#78966b" stroke-width="6" stroke-linejoin="round"/><path d="M225 196h61l-9 17h-43Z" fill="#d46e54"/><path d="M656 153q20-20 40 0m64 19q17-17 34 0" fill="none" stroke="#fffdf5" stroke-width="5" stroke-linecap="round"/><path d="M686 111q12-13 24 0-12 13-24 0Zm0 0q12 13 24 0" fill="none" stroke="#285c4d" stroke-width="4"/><circle cx="172" cy="80" r="5" fill="#fffdf5"/><circle cx="786" cy="116" r="5" fill="#fffdf5"/></svg></div>
           <div class="post-content">
           <div class="post-meta"><span class="tag">Crime &amp; punishment</span><span>Justice and humanity</span></div>
           <h3>Justice should leave room for change</h3>
@@ -458,29 +386,6 @@
   <footer>Made with curiosity · A personal English-learning journal</footer>
   <script>
     (() => {
-      const databaseName = "fieldnotes-image-edits";
-      const storeName = "images";
-      const openDatabase = () => new Promise((resolve, reject) => {
-        const request = indexedDB.open(databaseName, 1);
-        request.onupgradeneeded = () => request.result.createObjectStore(storeName);
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-      });
-      const withStore = async (mode, action) => {
-        const database = await openDatabase();
-        return new Promise((resolve, reject) => {
-          const transaction = database.transaction(storeName, mode);
-          const request = action(transaction.objectStore(storeName));
-          request.onsuccess = () => resolve(request.result);
-          request.onerror = () => reject(request.error);
-          transaction.oncomplete = () => database.close();
-          transaction.onerror = () => reject(transaction.error);
-        });
-      };
-      const setImage = (key, image) => withStore("readwrite", store => store.put(image, key));
-      const getImage = key => withStore("readonly", store => store.get(key));
-      const deleteImage = key => withStore("readwrite", store => store.delete(key));
-
       const imageSources = {
         cover: "foto1.jpg",
         family: "foto2.jpg",
@@ -493,235 +398,16 @@
       };
 
       document.querySelectorAll("[data-image-editor]").forEach(editor => {
-        const key = editor.dataset.imageEditor;
         const artwork = editor.querySelector("svg");
-        const imageSource = imageSources[key];
+        const imageSource = imageSources[editor.dataset.imageEditor];
         if (!artwork || !imageSource) {
-          throw new Error(`Missing original image configuration for "${key}".`);
+          throw new Error(`Missing original image configuration for "${editor.dataset.imageEditor}".`);
         }
-        const original = new Image();
-        original.className = "original-image";
-        original.src = imageSource;
-        original.alt = artwork.querySelector("title")?.textContent || "Blog photo";
-        artwork.replaceWith(original);
-        const input = editor.querySelector('input[type="file"]');
-        const changeButton = editor.querySelector('[data-image-action="change"]');
-        const resetButton = editor.querySelector('[data-image-action="reset"]');
-        const status = editor.querySelector(".image-status");
-        let currentUrl;
-        let imageVersion = 0;
-        const showImage = async blob => {
-          const version = ++imageVersion;
-          const nextUrl = URL.createObjectURL(blob);
-          const preview = new Image();
-          try {
-            await new Promise((resolve, reject) => {
-              preview.onload = resolve;
-              preview.onerror = () => reject(new Error("The selected file is not a readable image."));
-              preview.src = nextUrl;
-            });
-          } catch (error) {
-            URL.revokeObjectURL(nextUrl);
-            throw error;
-          }
-          if (version !== imageVersion) {
-            URL.revokeObjectURL(nextUrl);
-            return;
-          }
-          let image = editor.querySelector(".edited-image");
-          if (!image) {
-            image = document.createElement("img");
-            image.className = "edited-image";
-            image.alt = original.alt || "Blog photo";
-            editor.append(image);
-          }
-          image.src = nextUrl;
-          if (key !== "cover") {
-            editor.style.setProperty("--uploaded-image-ratio", `${preview.naturalWidth} / ${preview.naturalHeight}`);
-            editor.classList.add("has-uploaded-image");
-          }
-          original.hidden = true;
-          resetButton.hidden = false;
-          if (currentUrl) URL.revokeObjectURL(currentUrl);
-          currentUrl = nextUrl;
-        };
-
-        const initialVersion = imageVersion;
-        getImage(key).then(blob => {
-          if (blob && initialVersion === imageVersion) {
-            return showImage(blob).catch(error => {
-              console.error("Could not display the saved blog image.", error);
-              status.textContent = "No se pudo mostrar la imagen. La foto original sigue disponible.";
-            });
-          }
-        }).catch(() => {
-          status.textContent = "No se pudo cargar la imagen guardada.";
-        });
-
-        changeButton.addEventListener("click", () => input.click());
-        input.addEventListener("change", async () => {
-          const file = input.files?.[0];
-          input.value = "";
-          if (!file) return;
-          if (!file.type.startsWith("image/")) {
-            status.textContent = "Selecciona un archivo de imagen.";
-            return;
-          }
-          changeButton.disabled = true;
-          resetButton.disabled = true;
-          status.textContent = "Guardando imagen…";
-          try {
-            await showImage(file);
-          } catch (error) {
-            console.error("Could not display the selected blog image.", error);
-            status.textContent = "No se pudo mostrar la imagen. Elige otro archivo.";
-            changeButton.disabled = false;
-            resetButton.disabled = false;
-            return;
-          }
-          try {
-            await setImage(key, file);
-            status.textContent = "Imagen guardada en este navegador.";
-          } catch (error) {
-            console.error("Could not save the selected blog image.", error);
-            status.textContent = "La imagen se muestra, pero no se pudo guardar en este navegador.";
-          }
-          changeButton.disabled = false;
-          resetButton.disabled = false;
-        });
-        resetButton.addEventListener("click", async () => {
-          imageVersion += 1;
-          resetButton.disabled = true;
-          status.textContent = "Restaurando foto original…";
-          try {
-            await deleteImage(key);
-            const image = editor.querySelector(".edited-image");
-            if (image) image.remove();
-            if (currentUrl) URL.revokeObjectURL(currentUrl);
-            currentUrl = undefined;
-            editor.classList.remove("has-uploaded-image");
-            editor.style.removeProperty("--uploaded-image-ratio");
-            original.hidden = false;
-            resetButton.hidden = true;
-            status.textContent = "Foto original restaurada.";
-          } catch (error) {
-            console.error("Could not restore the original blog photo.", error);
-            status.textContent = "No se pudo restaurar la foto.";
-          } finally {
-            resetButton.disabled = false;
-          }
-        });
-      });
-
-      const travelEditor = document.querySelector('[data-image-editor="travel"]');
-      const videoInput = travelEditor.querySelector("[data-video-input]");
-      const uploadVideoButton = travelEditor.querySelector('[data-video-action="change"]');
-      const removeVideoButton = travelEditor.querySelector('[data-video-action="reset"]');
-      const travelStatus = travelEditor.querySelector(".image-status");
-      let travelVideoUrl;
-      let videoVersion = 0;
-      const showTravelVideo = async blob => {
-        const version = ++videoVersion;
-        const nextUrl = URL.createObjectURL(blob);
-        const video = document.createElement("video");
-        video.className = "uploaded-video";
-        video.controls = true;
-        video.playsInline = true;
-        video.preload = "metadata";
-        video.setAttribute("aria-label", "Travel video");
-        try {
-          await new Promise((resolve, reject) => {
-            video.onloadedmetadata = resolve;
-            video.onerror = () => reject(new Error("The selected video could not be opened."));
-            video.src = nextUrl;
-          });
-        } catch (error) {
-          URL.revokeObjectURL(nextUrl);
-          throw error;
-        }
-        if (version !== videoVersion) {
-          URL.revokeObjectURL(nextUrl);
-          return;
-        }
-        const previousVideo = travelEditor.querySelector(".uploaded-video");
-        if (previousVideo) previousVideo.remove();
-        travelEditor.append(video);
-        travelEditor.classList.add("has-uploaded-video");
-        travelEditor.querySelector(".original-image").hidden = true;
-        removeVideoButton.hidden = false;
-        if (travelVideoUrl) URL.revokeObjectURL(travelVideoUrl);
-        travelVideoUrl = nextUrl;
-      };
-
-      getImage("travel-video").then(blob => {
-        if (blob) {
-          return showTravelVideo(blob).catch(error => {
-            console.error("Could not display the saved travel video.", error);
-            travelStatus.textContent = "No se pudo mostrar el video guardado. La imagen original sigue disponible.";
-          });
-        }
-      }).catch(error => {
-        console.error("Could not load the saved travel video.", error);
-        travelStatus.textContent = "No se pudo cargar el video guardado.";
-      });
-
-      uploadVideoButton.addEventListener("click", () => videoInput.click());
-      videoInput.addEventListener("change", async () => {
-        const file = videoInput.files?.[0];
-        videoInput.value = "";
-        if (!file) return;
-        if (!file.type.startsWith("video/")) {
-          travelStatus.textContent = "Selecciona un archivo de video.";
-          return;
-        }
-        uploadVideoButton.disabled = true;
-        removeVideoButton.disabled = true;
-        travelStatus.textContent = "Cargando video…";
-        try {
-          await showTravelVideo(file);
-        } catch (error) {
-          console.error("Could not display the selected travel video.", error);
-          travelStatus.textContent = "No se pudo abrir el video. Prueba un formato compatible con tu navegador.";
-          uploadVideoButton.disabled = false;
-          removeVideoButton.disabled = false;
-          return;
-        }
-        try {
-          await setImage("travel-video", file);
-          travelStatus.textContent = "Video guardado en este navegador.";
-        } catch (error) {
-          console.error("Could not save the selected travel video.", error);
-          travelStatus.textContent = "El video se muestra, pero no se pudo guardar en este navegador.";
-        }
-        uploadVideoButton.disabled = false;
-        removeVideoButton.disabled = false;
-      });
-
-      removeVideoButton.addEventListener("click", async () => {
-        videoVersion += 1;
-        removeVideoButton.disabled = true;
-        travelStatus.textContent = "Quitando video…";
-        try {
-          await deleteImage("travel-video");
-          const video = travelEditor.querySelector(".uploaded-video");
-          if (video) video.remove();
-          if (travelVideoUrl) URL.revokeObjectURL(travelVideoUrl);
-          travelVideoUrl = undefined;
-          travelEditor.classList.remove("has-uploaded-video");
-          const image = travelEditor.querySelector("img.edited-image");
-          if (image) {
-            image.style.visibility = "visible";
-          } else {
-            travelEditor.querySelector(".original-image").hidden = false;
-          }
-          removeVideoButton.hidden = true;
-          travelStatus.textContent = "Video quitado.";
-        } catch (error) {
-          console.error("Could not remove the saved travel video.", error);
-          travelStatus.textContent = "No se pudo quitar el video.";
-        } finally {
-          removeVideoButton.disabled = false;
-        }
+        const image = new Image();
+        image.className = "original-image";
+        image.src = imageSource;
+        image.alt = artwork.querySelector("title")?.textContent || "Blog photo";
+        artwork.replaceWith(image);
       });
     })();
   </script>
