@@ -169,6 +169,12 @@
       position: relative;
       overflow: hidden;
     }
+    .image-editor > img.original-image {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
     .image-editor > img.edited-image {
       position: absolute;
       inset: 0;
@@ -192,6 +198,7 @@
       background: #18312e;
     }
     .image-editor.has-uploaded-video > svg,
+    .image-editor.has-uploaded-video > img.original-image,
     .image-editor.has-uploaded-video > img.edited-image { visibility: hidden; }
     .image-editor > video.uploaded-video {
       position: absolute;
@@ -474,9 +481,29 @@
       const getImage = key => withStore("readonly", store => store.get(key));
       const deleteImage = key => withStore("readwrite", store => store.delete(key));
 
+      const imageSources = {
+        cover: "foto1.jpg",
+        family: "foto2.jpg",
+        hobbies: "foto3.jpg",
+        work: "foto4.jpg",
+        travel: "foto5.jpg",
+        news: "foto6.jpg",
+        media: "foto7.jpg",
+        justice: "foto8.jpg"
+      };
+
       document.querySelectorAll("[data-image-editor]").forEach(editor => {
         const key = editor.dataset.imageEditor;
-        const original = editor.querySelector("svg");
+        const artwork = editor.querySelector("svg");
+        const imageSource = imageSources[key];
+        if (!artwork || !imageSource) {
+          throw new Error(`Missing original image configuration for "${key}".`);
+        }
+        const original = new Image();
+        original.className = "original-image";
+        original.src = imageSource;
+        original.alt = artwork.querySelector("title")?.textContent || "Blog photo";
+        artwork.replaceWith(original);
         const input = editor.querySelector('input[type="file"]');
         const changeButton = editor.querySelector('[data-image-action="change"]');
         const resetButton = editor.querySelector('[data-image-action="reset"]');
@@ -505,7 +532,7 @@
           if (!image) {
             image = document.createElement("img");
             image.className = "edited-image";
-            image.alt = original.querySelector("title")?.textContent || "Blog illustration";
+            image.alt = original.alt || "Blog photo";
             editor.append(image);
           }
           image.src = nextUrl;
@@ -524,7 +551,7 @@
           if (blob && initialVersion === imageVersion) {
             return showImage(blob).catch(error => {
               console.error("Could not display the saved blog image.", error);
-              status.textContent = "No se pudo mostrar la imagen. La ilustración original sigue disponible.";
+              status.textContent = "No se pudo mostrar la imagen. La foto original sigue disponible.";
             });
           }
         }).catch(() => {
@@ -565,7 +592,7 @@
         resetButton.addEventListener("click", async () => {
           imageVersion += 1;
           resetButton.disabled = true;
-          status.textContent = "Restaurando ilustración…";
+          status.textContent = "Restaurando foto original…";
           try {
             await deleteImage(key);
             const image = editor.querySelector(".edited-image");
@@ -576,10 +603,10 @@
             editor.style.removeProperty("--uploaded-image-ratio");
             original.hidden = false;
             resetButton.hidden = true;
-            status.textContent = "Ilustración original restaurada.";
+            status.textContent = "Foto original restaurada.";
           } catch (error) {
-            console.error("Could not restore the original blog illustration.", error);
-            status.textContent = "No se pudo restaurar la ilustración.";
+            console.error("Could not restore the original blog photo.", error);
+            status.textContent = "No se pudo restaurar la foto.";
           } finally {
             resetButton.disabled = false;
           }
@@ -620,7 +647,7 @@
         if (previousVideo) previousVideo.remove();
         travelEditor.append(video);
         travelEditor.classList.add("has-uploaded-video");
-        travelEditor.querySelector("svg").hidden = true;
+        travelEditor.querySelector(".original-image").hidden = true;
         removeVideoButton.hidden = false;
         if (travelVideoUrl) URL.revokeObjectURL(travelVideoUrl);
         travelVideoUrl = nextUrl;
@@ -685,7 +712,7 @@
           if (image) {
             image.style.visibility = "visible";
           } else {
-            travelEditor.querySelector("svg").hidden = false;
+            travelEditor.querySelector(".original-image").hidden = false;
           }
           removeVideoButton.hidden = true;
           travelStatus.textContent = "Video quitado.";
